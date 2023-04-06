@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interoperabilnost informacijskih sustava</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">IIS</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="/">Početna</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/xsd">XSD validation</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/rng">RNG validation</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/soap">SOAP</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/jaxb">JAXB</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/xmlrpc">XML-RPC</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-left" id="authNav">
+        <li class="nav-item">
+          <a class="nav-link active" href="/login">Prijava</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/register">Registracija</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Jumbotron -->
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <div class="alert alert-danger d-none" role="alert" id="alertDanger">
+      Prijava nije uspjela!
+    </div>
+    <div class="alert alert-success d-none" role="alert" id="alertSuccess">
+      Uspješna prijava!
+    </div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Korisničko ime</label>
+        <input type="text" class="form-control" id="username" name="username">
+      </div>
+      <div class="form-group">
+        <label for="password">Zaporka</label>
+        <input type="password" class="form-control" id="password" name="password">
+      </div>
+      <button type="submit" class="btn btn-primary" id="loginBtn">Prijavi se</button>
+    </form>
+  </div>
+</div>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+<script>
+  (() => {
+
+      if (sessionStorage.getItem('jwt') != undefined){
+        location.assign('http://localhost:8080/');
+      }
+     const postData = async (url = "", data = {}) => {
+      // Default options are marked with *
+      const response = await fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `email=${data.email}&password=${data.password}`, // body data type must match "Content-Type" header
+      });
+      return response.json(); // parses JSON response into native JavaScript objects
+    }
+    const login = (e) => {
+      e.preventDefault();
+
+      alertDanger.classList.add('d-none');
+      alertSuccess.classList.add('d-none');
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+      const data = {
+        email: username.value,
+        password: password.value
+      }
+
+      postData('http://localhost:8000/api/login', data)
+              .then((result) => {
+                sessionStorage.setItem('jwt', result.authorisation.token);
+                alertSuccess.classList.remove('d-none');
+                //location.assign('http://localhost:8080/');
+              })
+              .catch((error) => {
+                console.error(error);
+                alertDanger.classList.remove('d-none');
+              })
+              .finally(() => {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Prijavi se';
+              })
+    }
+
+    loginForm.addEventListener('submit', login);
+
+  })();
+</script>
+
+</body>
+</html>
