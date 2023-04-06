@@ -15,6 +15,15 @@ public class HomeController {
         return "xsd";
     }
 
+    @GetMapping("/rng")
+    public String rng() {
+        return "rng";
+    }
+
+    @GetMapping("/soap")
+    public String soap() {
+        return "soap";
+    }
 
     @GetMapping("/login")
     public String login() {

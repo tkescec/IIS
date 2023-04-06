@@ -24,10 +24,10 @@
           <a class="nav-link" aria-current="page" href="/">Početna</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/xsd">XSD validation</a>
+          <a class="nav-link" href="/xsd">XSD validation</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/rng">RNG validation</a>
+          <a class="nav-link active" href="/rng">RNG validation</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/soap">SOAP</a>
@@ -43,9 +43,9 @@
         <li class="nav-item">
           <a class="nav-link" href="/login">Prijava</a>
         </li>
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="/register">Registracija</a>-->
-<!--        </li>-->
+        <!--        <li class="nav-item">-->
+        <!--          <a class="nav-link" href="/register">Registracija</a>-->
+        <!--        </li>-->
       </ul>
     </div>
   </div>
@@ -60,12 +60,12 @@
     <div class="alert alert-success d-none" role="alert" id="alertSuccess">
 
     </div>
-    <form id="xsdForm">
+    <form id="rngForm">
       <div class="mb-3">
         <label for="xmlFile" class="form-label">XML datoteka</label>
         <input class="form-control" type="file" id="xmlFile" required>
       </div>
-      <button type="submit" class="btn btn-primary" id="xsdBtn">Provjeri</button>
+      <button type="submit" class="btn btn-primary" id="rngBtn">Provjeri</button>
     </form>
   </div>
 </div>
@@ -103,14 +103,14 @@
 
       alertDanger.classList.add('d-none');
       alertSuccess.classList.add('d-none');
-      xsdBtn.disabled = true;
-      xsdBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+      rngBtn.disabled = true;
+      rngBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
       const data = {
         pokemon: xmlFile.files[0]
       }
 
-      postData('http://localhost:8000/api/xsd', data)
+      postData('http://localhost:8000/api/rng', data)
               .then((result) => {
 
                 if (result.status == "success"){
@@ -128,12 +128,12 @@
                 alertDanger.innerHTML = error.message;
               })
               .finally(() => {
-                xsdBtn.disabled = false;
-                xsdBtn.innerHTML = 'Provjeri';
+                rngBtn.disabled = false;
+                rngBtn.innerHTML = 'Provjeri';
               })
     }
 
-    xsdForm.addEventListener('submit', validate);
+    rngForm.addEventListener('submit', validate);
   })();
 </script>
 
