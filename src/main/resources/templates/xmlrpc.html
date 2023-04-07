@@ -30,13 +30,13 @@
           <a class="nav-link" href="/rng">RNG validation</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/soap">SOAP</a>
+          <a class="nav-link" href="/soap">SOAP</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/jaxb">JAXB</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/xmlrpc">XML-RPC</a>
+          <a class="nav-link active" href="/xmlrpc">XML-RPC</a>
         </li>
       </ul>
       <ul class="navbar-nav ms-left" id="authNav">
@@ -60,14 +60,15 @@
     <div class="alert alert-success d-none" role="alert" id="alertSuccess">
 
     </div>
-    <form id="soapForm">
+    <form id="rpcForm">
+      <h1>Saznaj trenutnu temperaturu:</h1>
       <div class="mb-3">
-        <label for="pokemonSearch" class="form-label">Traži pokemona</label>
-        <input class="form-control" type="text" id="pokemonSearch" required>
+        <label for="city" class="form-label">Grad</label>
+        <input class="form-control" type="text" id="city" required>
       </div>
-      <button type="submit" class="btn btn-primary" id="soapBtn">Traži...</button>
+      <button type="submit" class="btn btn-primary" id="rpcBtn">Saznaj...</button>
     </form>
-    <div id="xmlResult" class="mt-3">
+    <div id="rpcResult" class="mt-3">
 
     </div>
   </div>
@@ -99,21 +100,15 @@
 
       alertDanger.classList.add('d-none');
       alertSuccess.classList.add('d-none');
-      soapBtn.disabled = true;
-      soapBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+      rpcBtn.disabled = true;
+      rpcBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
-      postData(`http://localhost:8000/api/pokemon/search?term=${pokemonSearch.value}`)
+      postData(`http://localhost:8081/xmlrpc/client.php?params=${city.value}`)
               .then((result) => {
-
-                if (result.status == "success"){
-                  alertSuccess.classList.remove('d-none');
-                  alertSuccess.innerHTML = result.message;
-                  xmlResult.innerHTML = result.result;
-                  return;
-                } else {
-                  alertDanger.classList.remove('d-none');
-                  alertDanger.innerHTML = result.message;
-                }
+                rpcResult.innerHTML = `
+                    <div>Grad: <b>${city.value}</b></div>
+                    <div>Temp: <b>${result.replace(/<\/?[^>]+(>|$)/g, "")}&#8451;</b></div>
+                `;
               })
               .catch((error) => {
                 console.error(error);
@@ -121,12 +116,12 @@
                 alertDanger.innerHTML = error.message;
               })
               .finally(() => {
-                soapBtn.disabled = false;
-                soapBtn.innerHTML = 'Traži...';
+                rpcBtn.disabled = false;
+                rpcBtn.innerHTML = 'Provjeri...';
               })
     }
 
-    soapForm.addEventListener('submit', search);
+    rpcForm.addEventListener('submit', search);
   })();
 </script>
 

@@ -25,6 +25,16 @@ public class HomeController {
         return "soap";
     }
 
+    @GetMapping("/jaxb")
+    public String jaxb() {
+        return "jaxb";
+    }
+
+    @GetMapping("/xmlrpc")
+    public String xmlrpc() {
+        return "xmlrpc";
+    }
+
     @GetMapping("/login")
     public String login() {
         return "login";
